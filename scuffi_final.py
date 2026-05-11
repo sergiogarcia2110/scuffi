@@ -1016,11 +1016,11 @@ with col_sf:
     )
     _ico = functools.partial(_icon, color="rgba(255,255,255,.9)")
     powers = [
-        (_ico("target", 17), "RESOLUCIÓN GUIADA", "87%", "casos cerrados<br>sin escalar", "#EF4444"),
-        (_ico("refresh-cw", 17), "DEVOLUCIONES AUTO", "0", "pasos que hace<br>el cliente", "#A855F7"),
-        (_ico("package", 17), "TRACKING REAL-TIME", "100%", "incidencias notificadas<br>proactivamente", "#F97316"),
-        (_ico("bar-chart-2", 17), "INSIGHTS ACCIONABLES", "∞", "cada chat = dato<br>de negocio", "#3B82F6"),
-        (_ico("user", 17), "ESCALADO INTELIGENTE", "0%", "contexto perdido<br>al transferir", "#10B981"),
+        (_ico("target", 17), "RESOLUCIÓN GUIADA", "87%", "casos cerrados sin escalar", "#EF4444"),
+        (_ico("refresh-cw", 17), "DEVOLUCIONES AUTO", "0", "pasos que hace el cliente", "#A855F7"),
+        (_ico("package", 17), "TRACKING REAL-TIME", "100%", "incidencias notificadas proactivamente", "#F97316"),
+        (_ico("bar-chart-2", 17), "INSIGHTS ACCIONABLES", "∞", "cada chat = dato de negocio", "#3B82F6"),
+        (_ico("user", 17), "ESCALADO INTELIGENTE", "0%", "contexto perdido al transferir", "#10B981"),
     ]
     pow_html = ""
     for i, (ico, name, stat, desc, col) in enumerate(powers):
@@ -1033,10 +1033,11 @@ with col_sf:
             f'<span style="font-family:\'Syne\',sans-serif;font-size:.62rem;font-weight:800;'
             f'letter-spacing:.08em;color:rgba(255,255,255,.5);text-transform:uppercase;">{name}</span>'
             f'</div>'
-            f'<div style="display:flex;align-items:baseline;gap:8px;">'
+            f'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
             f'<span style="font-family:\'Syne\',sans-serif;font-size:1.5rem;font-weight:800;'
-            f'color:{col};line-height:1;">{stat}</span>'
-            f'<span style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.4;">{desc}</span>'
+            f'color:{col};line-height:1;flex-shrink:0;">{stat}</span>'
+            f'<span style="font-size:.78rem;color:rgba(255,255,255,.52);line-height:1.35;'
+            f'flex:1;min-width:min(100%,9rem);">{desc}</span>'
             f'</div>'
             f'</div>'
         )
@@ -1069,8 +1070,8 @@ with col_sf:
         f'<div style="font-family:\'Syne\',sans-serif;font-size:2.1rem;font-weight:800;'
         f'color:#fff;letter-spacing:.06em;line-height:1;margin-bottom:3px;'
         f'text-shadow:0 0 28px rgba(43,117,81,.5);">SCUFFI</div>'
-        f'<div style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;'
-        f'color:rgba(255,255,255,.35);margin-bottom:8px;">Superhéroe de CX · Scuffers · 24/7</div>'
+        f'<div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;'
+        f'color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.35;">Superhéroe de CX · Scuffers · 24/7</div>'
         f'<div style="display:inline-flex;align-items:center;gap:6px;background:#1A7F4E;'
         f'padding:4px 11px;border-radius:99px;border:1px solid rgba(255,255,255,.1);">'
         f'<span style="width:6px;height:6px;border-radius:50%;background:#7DCF9E;'
@@ -1178,7 +1179,7 @@ tab_ig, tab_maps, tab_voice = st.tabs(
 with tab_ig:
     css_ig = (
         "* { box-sizing:border-box; margin:0; padding:0; }"
-        "body { font-family:'Segoe UI',sans-serif; background:#fff; padding:16px; }"
+        "body { font-family:'Segoe UI',sans-serif; background:#fff; padding:16px 16px 20px; }"
         ".hd { display:flex; align-items:center; gap:10px; padding-bottom:10px; border-bottom:1px solid #E5E5E5; margin-bottom:14px; }"
         ".hd-av { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF); flex-shrink:0; }"
         ".hd-name { font-weight:700; font-size:.85rem; } .hd-handle { font-size:.68rem; color:#9CA3AF; }"
@@ -1189,7 +1190,7 @@ with tab_ig:
         ".bbl-l { background:#F3F4F6; color:#0D0D0D; }"
         ".bbl-r { background:#2B7551; color:#fff; }"
         ".tag { display:inline-block; background:#E0F0E8; color:#245542; font-size:.58rem; font-weight:700; padding:2px 7px; border-radius:99px; margin-top:3px; }"
-        ".res { background:#F1F7F4; border:1px solid #C5DED2; border-radius:8px; padding:7px 12px; margin-top:12px; font-size:.72rem; color:#245542; font-weight:600; display:flex; align-items:center; gap:8px; }"
+        ".res { background:#F1F7F4; border:1px solid #C5DED2; border-radius:8px; padding:10px 12px 11px; margin-top:12px; margin-bottom:4px; font-size:.72rem; color:#245542; font-weight:600; line-height:1.45; display:flex; align-items:center; flex-wrap:wrap; gap:8px; }"
     )
     body_ig = (
         '<div class="hd"><div class="hd-av"></div>'
@@ -1210,7 +1211,7 @@ with tab_ig:
     _comps.html(
         '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' + css_ig + '</style></head>'
         '<body>' + body_ig + '</body></html>',
-        height=340, scrolling=False,
+        height=420, scrolling=False,
     )
 
 # ── Google Maps ────────────────────────────────────────────────────────────────
