@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.Python
+venv/
+.venv/
+
+# Streamlit / esta app (generados al arrancar)
+logo_favicon.png
+_scuffi_tab_fallback.png
+
+# Local / secretos
+.env
+.streamlit/secrets.toml
+
+# IDE
+.claude/
+.idea/
+.vscode/
