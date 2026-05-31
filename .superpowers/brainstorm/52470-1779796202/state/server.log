@@ -1,0 +1,5 @@
+{"type":"server-started","port":63122,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:63122","screen_dir":"/Users/sergio/Documents/Scuffers/.superpowers/brainstorm/52470-1779796202/content","state_dir":"/Users/sergio/Documents/Scuffers/.superpowers/brainstorm/52470-1779796202/state"}
+{"type":"screen-added","file":"/Users/sergio/Documents/Scuffers/.superpowers/brainstorm/52470-1779796202/content/layout-options.html"}
+{"type":"screen-added","file":"/Users/sergio/Documents/Scuffers/.superpowers/brainstorm/52470-1779796202/content/style-options.html"}
+{"type":"screen-added","file":"/Users/sergio/Documents/Scuffers/.superpowers/brainstorm/52470-1779796202/content/waiting-1.html"}
+{"type":"server-stopped","reason":"idle timeout"}

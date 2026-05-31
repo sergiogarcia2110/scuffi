@@ -1,0 +1,126 @@
+<h2>¿Qué estructura para el visualizador?</h2>
+<p class="subtitle">El doc tiene: resumen ejecutivo, análisis, 8 proyectos, priorización, roadmap 7d→12m, arquitectura, framework medición</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="dashboard" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a2e;padding:8px;border-radius:4px;font-size:11px;color:#eee;font-family:monospace;min-height:120px">
+        <div style="display:flex;gap:6px;height:110px">
+          <div style="width:30%;background:#16213e;border-radius:3px;padding:6px;font-size:10px">
+            <div style="color:#7c83fd;margin-bottom:4px;font-weight:bold">📊 SCUFFERS IA</div>
+            <div style="padding:2px 4px;background:#0f3460;border-radius:2px;margin-bottom:2px;cursor:pointer">▸ Resumen</div>
+            <div style="padding:2px 4px;margin-bottom:2px;opacity:.7">▸ Proyectos</div>
+            <div style="padding:2px 4px;margin-bottom:2px;opacity:.7">▸ Roadmap</div>
+            <div style="padding:2px 4px;margin-bottom:2px;opacity:.7">▸ Arquitectura</div>
+            <div style="padding:2px 4px;margin-bottom:2px;opacity:.7">▸ Priorización</div>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:4px">
+            <div style="background:#0f3460;border-radius:3px;padding:5px">
+              <div style="font-size:9px;color:#7c83fd">KPI</div>
+              <div style="font-size:14px;font-weight:bold">5</div>
+              <div style="font-size:8px;opacity:.7">Iniciativas top</div>
+            </div>
+            <div style="background:#0f3460;border-radius:3px;padding:5px">
+              <div style="font-size:9px;color:#7c83fd">TIMELINE</div>
+              <div style="font-size:14px;font-weight:bold">12m</div>
+              <div style="font-size:8px;opacity:.7">Roadmap</div>
+            </div>
+            <div style="background:#0f3460;border-radius:3px;padding:5px;grid-column:span 2">
+              <div style="font-size:9px;color:#7c83fd;margin-bottom:4px">PROYECTOS PRIORITARIOS</div>
+              <div style="display:flex;gap:3px">
+                <span style="background:#e94560;font-size:8px;padding:1px 4px;border-radius:10px">Data Layer</span>
+                <span style="background:#0f9b58;font-size:8px;padding:1px 4px;border-radius:10px">Scuffi</span>
+                <span style="background:#f0a500;font-size:8px;padding:1px 4px;border-radius:10px">Contenido</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dashboard con sidebar</h3>
+      <p>Navegación lateral fija. Cada sección = vista separada. Métricas en cards. Muy limpio para presentar a stakeholders.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tabs" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0d1117;padding:8px;border-radius:4px;font-size:11px;color:#eee;font-family:monospace;min-height:120px">
+        <div style="display:flex;gap:0;margin-bottom:6px;border-bottom:1px solid #30363d">
+          <div style="padding:4px 8px;background:#21262d;border-radius:3px 3px 0 0;font-size:9px;color:#58a6ff;border-bottom:2px solid #58a6ff">Resumen</div>
+          <div style="padding:4px 8px;font-size:9px;opacity:.6">Proyectos</div>
+          <div style="padding:4px 8px;font-size:9px;opacity:.6">Roadmap</div>
+          <div style="padding:4px 8px;font-size:9px;opacity:.6">Métricas</div>
+          <div style="padding:4px 8px;font-size:9px;opacity:.6">Arquitectura</div>
+        </div>
+        <div style="background:#161b22;padding:6px;border-radius:3px">
+          <div style="font-size:10px;color:#58a6ff;margin-bottom:4px;font-weight:bold">🎯 Top 5 Iniciativas</div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px">
+              <span style="color:#3fb950">①</span> Data Intelligence Layer
+              <span style="background:#3fb950;color:#000;font-size:7px;padding:0 3px;border-radius:3px;margin-left:auto">HACER AHORA</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px">
+              <span style="color:#3fb950">②</span> Scuffi (CX bot)
+              <span style="background:#3fb950;color:#000;font-size:7px;padding:0 3px;border-radius:3px;margin-left:auto">HACER AHORA</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px">
+              <span style="color:#58a6ff">③</span> Generador contenido
+              <span style="background:#1f6feb;color:#fff;font-size:7px;padding:0 3px;border-radius:3px;margin-left:auto">HACER DESPUÉS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Tabs por sección</h3>
+      <p>Pestañas superiores para cada área. Contenido rico dentro de cada tab: tablas interactivas, timeline visual, matriz de prioridad.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="onepage" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#111;padding:8px;border-radius:4px;font-size:11px;color:#eee;font-family:monospace;min-height:120px;overflow:hidden">
+        <div style="background:#222;padding:4px 8px;border-radius:3px;margin-bottom:5px;display:flex;gap:8px;font-size:9px">
+          <span style="color:#f97316">SCUFFERS IA</span>
+          <span style="opacity:.5">|</span>
+          <span style="opacity:.7">Resumen</span>
+          <span style="opacity:.7">Proyectos</span>
+          <span style="color:#f97316">▼ Roadmap</span>
+          <span style="opacity:.7">Arquitectura</span>
+        </div>
+        <div style="font-size:9px;margin-bottom:4px;color:#f97316;font-weight:bold">📅 ROADMAP</div>
+        <div style="display:flex;gap:2px">
+          <div style="flex:1;background:#1a1a1a;padding:3px;border-radius:2px;border-top:2px solid #f97316">
+            <div style="font-size:7px;color:#f97316">7d</div>
+            <div style="font-size:7px;opacity:.8">Auditoría stack</div>
+          </div>
+          <div style="flex:1;background:#1a1a1a;padding:3px;border-radius:2px;border-top:2px solid #fb923c">
+            <div style="font-size:7px;color:#fb923c">30d</div>
+            <div style="font-size:7px;opacity:.8">GA4 + KPIs</div>
+          </div>
+          <div style="flex:1;background:#1a1a1a;padding:3px;border-radius:2px;border-top:2px solid #fbbf24">
+            <div style="font-size:7px;color:#fbbf24">60d</div>
+            <div style="font-size:7px;opacity:.8">Data Layer MVP</div>
+          </div>
+          <div style="flex:1;background:#1a1a1a;padding:3px;border-radius:2px;border-top:2px solid #a3e635">
+            <div style="font-size:7px;color:#a3e635">90d</div>
+            <div style="font-size:7px;opacity:.8">Scuffi + Tower</div>
+          </div>
+          <div style="flex:1;background:#1a1a1a;padding:3px;border-radius:2px;border-top:2px solid #34d399">
+            <div style="font-size:7px;color:#34d399">12m</div>
+            <div style="font-size:7px;opacity:.8">Madurez total</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — One-page con nav sticky</h3>
+      <p>Scroll continuo. Nav fija arriba que salta a secciones. Roadmap como timeline visual horizontal. Más narrativo, bueno para leer de corrido.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">Click para seleccionar tu preferencia de estructura general</p>

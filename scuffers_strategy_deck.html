@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scuffers × IA 2026 — Strategy Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#101010;--bg3:#161616;--bg4:#1E1E1E;
+  --border:#2A2A2A;--border2:#333;
+  --accent:#FF3B3B;--accent2:rgba(255,59,59,0.12);--accent-dim:rgba(255,59,59,0.12);
+  --text:#FFFFFF;--text2:#BBBBBB;--text3:#777;
+  --p1:#22C55E;--p2:#3B82F6;--p3:#A855F7;
+  --p1-dim:rgba(34,197,94,0.12);--p2-dim:rgba(59,130,246,0.12);--p3-dim:rgba(168,85,247,0.12);
+  --sidebar:260px;--header:56px;--footer:64px;
+  --radius:12px;--radius-sm:8px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+#header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(8,8,8,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 20px;z-index:100;backdrop-filter:blur(12px)}
+#logo{font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);white-space:nowrap}
+#logo span{color:var(--accent)}
+#progress-bar{flex:1;height:2px;background:var(--border);border-radius:1px;overflow:hidden;max-width:300px}
+#progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.3s ease}
+#slide-counter{font-size:11px;color:var(--text3);font-weight:500;letter-spacing:0.05em;white-space:nowrap}
+.header-spacer{flex:1}
+#sidebar-toggle{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text3);transition:all 0.2s}
+#sidebar-toggle:hover{border-color:var(--border2);color:var(--text)}
+#sidebar{position:fixed;top:var(--header);left:0;bottom:var(--footer);width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;transition:transform 0.3s ease;z-index:50;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+#sidebar.collapsed{transform:translateX(-100%)}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-track{background:transparent}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sidebar-section{padding:12px 0;border-bottom:1px solid var(--border)}
+.sidebar-label{padding:8px 16px;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
+.sidebar-phase-label{padding:6px 16px 2px;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:7px 16px;cursor:pointer;transition:background 0.15s;border-left:2px solid transparent}
+.sidebar-item:hover{background:var(--bg3)}
+.sidebar-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.sidebar-item .snum{font-size:10px;font-weight:700;color:var(--text3);min-width:20px;font-variant-numeric:tabular-nums}
+.sidebar-item.active .snum{color:var(--accent)}
+.sidebar-item .sname{flex:1;font-size:12px;font-weight:500;color:var(--text2);line-height:1.3}
+.sidebar-item.active .sname{color:var(--text)}
+.sidebar-item .scost{font-size:10px;color:var(--text3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sidebar-special{padding:7px 16px;cursor:pointer;transition:background 0.15s;border-left:2px solid transparent;display:flex;align-items:center;gap:10px}
+.sidebar-special:hover{background:var(--bg3)}
+.sidebar-special.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.sidebar-special .sname{font-size:12px;font-weight:500;color:var(--text2)}
+.sidebar-special.active .sname{color:var(--text)}
+#main{position:fixed;top:var(--header);bottom:var(--footer);left:var(--sidebar);right:0;transition:left 0.3s ease;overflow:hidden}
+#main.full{left:0}
+#slides-container{width:100%;height:100%;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;padding:28px 32px;opacity:0;pointer-events:none;transition:opacity 0.3s ease;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.slide.active{opacity:1;pointer-events:all}
+.slide::-webkit-scrollbar{width:4px}
+.slide::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.overview-title{font-size:38px;font-weight:900;letter-spacing:-0.02em;line-height:1.1;margin-bottom:8px}
+.overview-title .highlight{color:var(--accent)}
+.overview-sub{font-size:14px;color:var(--text3);margin-bottom:24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.kpi-val{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.02em}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:4px;font-weight:500}
+.ideas-grid-title{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+.ideas-overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.idea-chip{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:all 0.2s;display:flex;gap:10px;align-items:flex-start}
+.idea-chip:hover{border-color:var(--accent);background:var(--accent-dim)}
+.idea-chip .chip-icon{font-size:18px;flex-shrink:0;line-height:1}
+.idea-chip .chip-info{flex:1;min-width:0}
+.idea-chip .chip-num{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:0.08em}
+.idea-chip .chip-name{font-size:11px;font-weight:600;color:var(--text2);line-height:1.3;margin:2px 0}
+.idea-chip .chip-cost{font-size:10px;color:var(--text3)}
+.idea-chip .chip-phase{font-size:9px;font-weight:600;padding:1px 5px;border-radius:4px;display:inline-block;margin-top:2px}
+.cp1{background:var(--p1-dim);color:var(--p1)}.cp2{background:var(--p2-dim);color:var(--p2)}.cp3{background:var(--p3-dim);color:var(--p3)}
+.overview-total{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:24px}
+.total-main{font-size:22px;font-weight:800;color:var(--accent)}
+.total-sep{color:var(--border2)}
+.total-pct{font-size:13px;color:var(--text3)}
+.total-pct strong{color:var(--text2)}
+.idea-hero{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;display:flex;align-items:flex-start;gap:20px}
+.idea-hero-left{flex:1}
+.idea-hero-num{font-size:64px;font-weight:900;color:var(--border2);letter-spacing:-0.04em;line-height:1;margin-bottom:2px}
+.idea-hero-name{font-size:26px;font-weight:800;letter-spacing:-0.02em;color:var(--text);margin-bottom:6px}
+.idea-hero-tagline{font-size:14px;color:var(--text3);font-style:italic}
+.idea-hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.idea-icon{font-size:52px;line-height:1}
+.cost-badge{background:var(--accent);color:#fff;font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap}
+.phase-badge{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:12px}
+.phase-badge.p1{background:var(--p1-dim);color:var(--p1);border:1px solid rgba(34,197,94,0.3)}
+.phase-badge.p2{background:var(--p2-dim);color:var(--p2);border:1px solid rgba(59,130,246,0.3)}
+.phase-badge.p3{background:var(--p3-dim);color:var(--p3);border:1px solid rgba(168,85,247,0.3)}
+.cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.info-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.info-card-title{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.info-card-title .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-red{background:var(--accent)}.dot-blue{background:#3B82F6}.dot-green{background:#22C55E}
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.bullet-list li{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text2);line-height:1.45}
+.bullet-list li::before{content:'→';color:var(--accent);flex-shrink:0;font-size:11px;margin-top:1px}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.feature-item{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text2);line-height:1.4}
+.feature-item .fi-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.kpis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi-item{text-align:center;background:rgba(255,59,59,0.06);border:1px solid rgba(255,59,59,0.15);border-radius:8px;padding:12px 8px}
+.kpi-item .kv{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-0.02em}
+.kpi-item .kl{font-size:10px;color:var(--text3);margin-top:2px;line-height:1.3}
+.bottom-row{display:grid;grid-template-columns:1fr 300px;gap:12px}
+.tech-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.tech-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tech-chip{font-size:11px;font-weight:500;background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;color:var(--text2)}
+.cost-table{width:100%;border-collapse:collapse;font-size:11px}
+.cost-table td{padding:4px 0;color:var(--text3)}
+.cost-table td:last-child{text-align:right;color:var(--text2);font-variant-numeric:tabular-nums}
+.cost-table tr.total td{border-top:1px solid var(--border);padding-top:7px;color:var(--text);font-weight:600}
+.cost-table tr.total td:last-child{color:var(--accent)}
+.bars-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.bar-row{margin-bottom:14px}
+.bar-label{display:flex;justify-content:space-between;margin-bottom:6px}
+.bar-label span:first-child{font-size:11px;font-weight:500;color:var(--text2)}
+.bar-label span:last-child{font-size:11px;color:var(--text3)}
+.bar-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+.bar-roi{background:linear-gradient(90deg,#22C55E,#86efac)}
+.bar-complexity{background:linear-gradient(90deg,#F59E0B,#FCD34D)}
+.roadmap-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px}
+.roadmap-sub{font-size:13px;color:var(--text3);margin-bottom:28px}
+.phases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.phase-col{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px}
+.phase-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.phase-name{font-size:15px;font-weight:800}
+.phase-period{font-size:11px;font-weight:400;display:block;margin-top:2px}
+.phase-total{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px}
+.phase1-theme{color:var(--p1)}.phase2-theme{color:var(--p2)}.phase3-theme{color:var(--p3)}
+.phase-total-p1{background:var(--p1-dim);color:var(--p1);border:1px solid rgba(34,197,94,0.3)}
+.phase-total-p2{background:var(--p2-dim);color:var(--p2);border:1px solid rgba(59,130,246,0.3)}
+.phase-total-p3{background:var(--p3-dim);color:var(--p3);border:1px solid rgba(168,85,247,0.3)}
+.roadmap-card{border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all 0.2s}
+.roadmap-card:hover{background:var(--bg4)}
+.roadmap-card-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.roadmap-card-icon{font-size:16px}
+.roadmap-card-name{font-size:12px;font-weight:600;color:var(--text)}
+.roadmap-card-cost{font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
+.border-p1{border-left:3px solid var(--p1)!important}.border-p2{border-left:3px solid var(--p2)!important}.border-p3{border-left:3px solid var(--p3)!important}
+.roadmap-total-row{margin-top:24px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:32px}
+.rt-item{text-align:center}
+.rt-val{font-size:18px;font-weight:800}
+.rt-label{font-size:10px;color:var(--text3);margin-top:2px}
+#footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:rgba(8,8,8,0.95);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;backdrop-filter:blur(12px)}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 20px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.nav-btn:hover{border-color:var(--accent);color:var(--text)}
+.nav-btn:disabled{opacity:0.3;cursor:default;pointer-events:none}
+.nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav-btn.primary:hover{background:#e62e2e}
+.kbd-hint{font-size:11px;color:var(--text3)}
+.kbd{display:inline-block;padding:2px 6px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;font-size:10px;font-family:monospace}
+.shopify-block{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-top:12px}
+.shopify-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.shopify-badge{font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px}
+.shopify-badge.plug{background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.3)}
+.shopify-badge.custom{background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
+.shopify-badge.n8n{background:rgba(59,130,246,0.12);color:#3b82f6;border:1px solid rgba(59,130,246,0.3)}
+.shopify-head-title{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
+.shopify-surface{font-size:10px;color:var(--text3);margin-bottom:10px;font-family:monospace;padding:4px 8px;background:var(--bg4);border-radius:4px;display:inline-block}
+.shopify-body{display:grid;grid-template-columns:1fr 160px;gap:16px;align-items:start}
+.shopify-steps{display:flex;flex-direction:column;gap:5px}
+.shopify-step{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2);line-height:1.45}
+.shopify-step-num{font-size:10px;font-weight:700;min-width:16px;flex-shrink:0;margin-top:1px}
+.sn-plug{color:#22c55e}.sn-custom{color:#f59e0b}.sn-n8n{color:#3b82f6}
+.shopify-meta{display:flex;flex-direction:column;gap:8px}
+.shopify-time{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;text-align:center}
+.shopify-time-val{font-size:11px;font-weight:700;color:var(--text2);line-height:1.4}
+.shopify-time-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
+.shopify-extra{font-size:10px;font-weight:600;padding:5px 8px;background:rgba(34,197,94,0.1);color:#22c55e;border-radius:6px;text-align:center;line-height:1.4}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="logo">Scuffers <span>×</span> IA 2026</div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div id="slide-counter">01 / 18</div>
+  <div class="header-spacer"></div>
+  <div class="kbd-hint" style="margin-right:12px"><span class="kbd">←</span> <span class="kbd">→</span> navegar</div>
+  <button id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+</div>
+
+<div id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Navegación</div>
+    <div class="sidebar-special active" id="nav-0" onclick="goTo(0)">
+      <span style="font-size:14px">🏠</span>
+      <span class="sname">Portada / Overview</span>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">16 Ideas</div>
+    <div id="sidebar-ideas"></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-special" id="nav-17" onclick="goTo(17)">
+      <span style="font-size:14px">🗺️</span>
+      <span class="sname">Roadmap 2026</span>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="slides-container">
+    <div class="slide active" id="slide-0">
+      <div class="overview-title">Scuffers <span class="highlight">×</span> IA &amp; Automatización<br><span style="font-weight:300;color:var(--text2)">Propuesta Estratégica 2026</span></div>
+      <div class="overview-sub">16 herramientas · Stack completo · &lt;0.083% de facturación mensual</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-val">2,6M€</div><div class="kpi-label">Facturación mensual</div></div>
+        <div class="kpi-card"><div class="kpi-val">1,2M</div><div class="kpi-label">Seguidores Instagram</div></div>
+        <div class="kpi-card"><div class="kpi-val">4</div><div class="kpi-label">Tiendas físicas</div></div>
+        <div class="kpi-card"><div class="kpi-val">+50%</div><div class="kpi-label">Ventas internacionales</div></div>
+      </div>
+      <div class="ideas-grid-title">Las 16 ideas ordenadas por fase — clic para explorar</div>
+      <div class="ideas-overview-grid" id="overview-grid"></div>
+      <div class="overview-total">
+        <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Coste total del stack</div><div class="total-main">~2.150€/mes</div></div>
+        <div class="total-sep">|</div>
+        <div class="total-pct">Incluye <strong>Claude Code Max × 2 devs (370€)</strong><br><span style="color:var(--text3)">Representa <strong style="color:var(--text2)">&lt;0,083%</strong> de la facturación mensual</span></div>
+      </div>
+    </div>
+    <div id="idea-slides"></div>
+    <div class="slide" id="slide-17">
+      <div class="roadmap-title">Roadmap Estratégico 2026</div>
+      <div class="roadmap-sub">Implementación por fases — del quick win a la ventaja competitiva duradera</div>
+      <div class="phases-grid" id="phases-grid"></div>
+      <div class="roadmap-total-row">
+        <div class="rt-item"><div class="rt-val phase1-theme">~395€</div><div class="rt-label">Fase 1 / mes</div></div>
+        <div class="rt-item" style="color:var(--text3);font-size:18px">+</div>
+        <div class="rt-item"><div class="rt-val phase2-theme">~725€</div><div class="rt-label">Fase 2 / mes</div></div>
+        <div class="rt-item" style="color:var(--text3);font-size:18px">+</div>
+        <div class="rt-item"><div class="rt-val phase3-theme">~660€</div><div class="rt-label">Fase 3 / mes</div></div>
+        <div class="rt-item" style="color:var(--text3);font-size:18px">=</div>
+        <div class="rt-item"><div class="rt-val" style="color:var(--accent)">~2.150€</div><div class="rt-label">Stack completo / mes</div></div>
+        <div style="flex:1"></div>
+        <div class="rt-item" style="text-align:right"><div style="font-size:11px;color:var(--text3)">vs. desarrollo externo</div><div style="font-size:16px;font-weight:700;color:var(--text2);text-decoration:line-through">+30.000€</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer">
+  <button class="nav-btn" id="btn-prev" onclick="prevSlide()" disabled>← Anterior</button>
+  <div class="kbd-hint" id="footer-info" style="color:var(--text3);font-size:12px"></div>
+  <button class="nav-btn primary" id="btn-next" onclick="nextSlide()">Siguiente →</button>
+</div>
+
+<script>
+// IDEAS ordered by phase. Phase 1: 1-4 | Phase 2: 5-9 | Phase 3: 10-16 (Anti-Hacoo = 16)
+const IDEAS = [
+  // ── FASE 1: Quick Wins ────────────────────────────────────────────────────
+  {
+    id:1, icon:'✍️', name:'Scuffers Studio',
+    tagline:'Herramienta interna de contenido con IA que reemplaza al community manager genérico',
+    cost:'~100€/mes', costNum:100, phase:1, roi:5, complexity:1,
+    category:'Marketing / Contenido',
+    costBreakdown:[['Claude API (uso estimado medio)','~80€'],['Hosting (Railway / Render)','~20€'],['Total','~100€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['El equipo usa ChatGPT y Claude de forma desorganizada — sin tono de marca, sin historial, sin conocimiento del brand book','Agencias de copywriting externas cuestan 500-2.000€/mes para un nivel de calidad inconsistente','1 community manager no puede producir contenido diferenciado para múltiples mercados y canales']},
+    solution:{title:'La solución',items:[{icon:'📧',text:'Generador de emails: drops, carritos abandonados, reclamaciones — por segmento de cliente'},{icon:'📱',text:'Captions para Instagram y TikTok con hashtags optimizados + textos para stories y countdowns'},{icon:'📰',text:'Newsletters completas generadas desde bullet points con layout estructurado'},{icon:'🌍',text:'Traductor de Marca: inglés, alemán, francés, italiano manteniendo el tono Scuffers'},{icon:'📚',text:'Brand book integrado como contexto fijo (prompt caching = 90% más barato en lecturas repetidas)'}]},
+    impact:[{value:'1h',label:'vs. 1 día para producir contenido'},{value:'100%',label:'Consistencia de tono cross-channel'},{value:'-2.000€',label:'Ahorro máximo mensual en agencias'},{value:'4',label:'Idiomas con tono de marca propio'}],
+    tech:['Claude API (Sonnet 4.6 + prompt caching)','Python / FastAPI','React','SQL']
+  },
+  {
+    id:2, icon:'🤖', name:'Scuffi',
+    tagline:'El agente de atención al cliente que automatiza el 60-70% de los tickets sin intervención humana',
+    cost:'~130€/mes', costNum:130, phase:1, roi:5, complexity:2,
+    category:'Atención al Cliente',
+    costBreakdown:[['Claude API (volumen estimado)','~120€'],['n8n self-hosted','~10€'],['Meta API / Google API','Gratuito'],['Total','~130€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['El 67% de los consumidores espera respuesta en menos de 4 horas en Instagram — con 1,2M seguidores esto es imposible manualmente','Los drops generan picos masivos de DMs y consultas que desbordan al equipo actual','Los benchmarks de Gorgias para e-commerce de moda muestran 60-70% de automatización alcanzable']},
+    solution:{title:'La solución',items:[{icon:'🌐',text:'Web chat 24/7: tallas, materiales, envíos, devoluciones + estado de pedido en tiempo real'},{icon:'📩',text:'Instagram DMs: gestión completa de devoluciones, clasificación y escalado automático'},{icon:'⭐',text:'Google Maps: respuestas personalizadas a reseñas de todas las tiendas físicas'},{icon:'⚡',text:'Acciones reales: iniciar devolución, enviar tracking, aplicar código descuento, escalar con contexto'}]},
+    impact:[{value:'60-70%',label:'Automatización de atención al cliente'},{value:'<30s',label:'Tiempo de primera respuesta en Instagram'},{value:'-2',label:'Personas liberadas para casos de alto valor'},{value:'↑⭐',label:'Reputación Google Maps mejorada'}],
+    tech:['Claude API (Haiku 4.5 + Sonnet 4.6)','n8n','Meta API (Instagram)','Google Business API','Python','SQL'],
+    shopify:{badgeType:'custom',badgeLabel:'INTEGRACIÓN CUSTOM',surface:'Shopify Storefront API + Admin API (GraphQL, versión 2026-04)',steps:['Crear Custom App en Shopify CLI con permisos: read_orders, write_orders, read_customers, read_products','Embeber el widget de chat en el tema via App Embed (drag & drop en el Theme Editor)','Conectar Admin API GraphQL para consultar estado de pedidos y procesar devoluciones en tiempo real','Claude API actúa como motor de respuesta; n8n orquesta las llamadas a Shopify API'],time:'2-3 días'}
+  },
+  {
+    id:3, icon:'🔥', name:'Drop Hype Monitor',
+    tagline:'Cuantificar la anticipación pre-drop para reaccionar antes del lanzamiento, no después',
+    cost:'~125€/mes', costNum:125, phase:1, roi:4, complexity:2,
+    category:'Marketing / Contenido',
+    costBreakdown:[['Apify (scraping multicanal)','~60€'],['Claude API (análisis + informes)','~50€'],['n8n + hosting','~15€'],['Total','~125€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['El éxito de un drop se fragua en las semanas anteriores — la anticipación es el termómetro real','Nude Project ya usa herramientas de análisis de sentimiento para gestionar su crecimiento','Sin monitorización, Scuffers se entera de que un drop no genera suficiente hype cuando ya es demasiado tarde']},
+    solution:{title:'La solución',items:[{icon:'📊',text:'Hype Score horario: menciones en Instagram, TikTok, X, Reddit y Google Trends analizadas por Claude API'},{icon:'⚡',text:'Alertas de momentum: picos de viralidad, sentimiento negativo pre-drop, detección de leaks no oficiales'},{icon:'🌍',text:'Mapa geográfico de conversación + nube de palabras + curva histórica por drop'},{icon:'🔮',text:'Predicción de demanda: correlación Hype Score × ventas reales mejora con cada drop'}]},
+    impact:[{value:'48h',label:'Informe de situación pre-drop'},{value:'Real-time',label:'Sentimiento multiplataforma'},{value:'↑',label:'Precisión de stock con cada drop'},{value:'0',label:'Drops con hype insuficiente sin reaccionar'}],
+    tech:['n8n','Apify','Claude API','Python','SQL','Google Trends API','Metabase']
+  },
+  {
+    id:4, icon:'⚙️', name:'Ops Assistant',
+    tagline:'El bot interno que elimina las preguntas operativas repetitivas y acelera el onboarding',
+    cost:'~40€/mes', costNum:40, phase:1, roi:4, complexity:1,
+    category:'Operaciones / Datos',
+    costBreakdown:[['Claude API (consultas internas)','~30€'],['n8n + hosting','~10€'],['Total','~40€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Con 10-50 empleados distribuidos entre tiendas y oficinas hay un flujo constante de preguntas repetitivas por WhatsApp','Levi\'s lanzó en 2025 "Stitch", un asistente de IA para sus equipos de tienda — el concepto está validado','Cada nuevo empleado hace las mismas preguntas durante semanas — el onboarding consume tiempo de managers']},
+    solution:{title:'La solución',items:[{icon:'📚',text:'Base de conocimiento centralizada: políticas, procedimientos, guías de tallas, FAQs, calendario de drops'},{icon:'💬',text:'Bot por WhatsApp y Slack: respuesta en lenguaje natural con fuente citada o escalado a persona correcta'},{icon:'🎓',text:'Onboarding automatizado: guía paso a paso + quiz informal a los 7 días para nuevos empleados'},{icon:'📊',text:'Analytics de preguntas: informe mensual de áreas de mayor confusión para el equipo de management'}]},
+    impact:[{value:'↓',label:'Tiempo de managers en preguntas repetitivas'},{value:'↑',label:'Velocidad y consistencia del onboarding'},{value:'0',label:'Errores operativos por desconocimiento'},{value:'Auto',label:'Documentación que mejora con el uso'}],
+    tech:['Claude API (Haiku 4.5)','Notion API / Google Drive','n8n','Python','SQL']
+  },
+  // ── FASE 2: Core Infrastructure ───────────────────────────────────────────
+  {
+    id:5, icon:'📊', name:'Scuffers Data Hub',
+    tagline:'La plataforma de inteligencia para que cada decisión esté respaldada por datos',
+    cost:'~170€/mes', costNum:170, phase:2, roi:5, complexity:4,
+    category:'Operaciones / Datos',
+    costBreakdown:[['PostgreSQL + hosting','~30€'],['n8n self-hosted','~10€'],['Claude API (consultas + informes)','~80€'],['Metabase (cloud o self-hosted)','~0-50€'],['Total','~170€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Ventas, redes sociales, atención al cliente, influencers, tiendas físicas — los datos están en silos separados','Los informes se preparan manualmente cada semana, tardando horas en responder preguntas básicas','Las decisiones más importantes (qué drop lanzar, dónde abrir tienda) se toman con intuición']},
+    solution:{title:'La solución',items:[{icon:'🏗️',text:'Integración de Shopify, redes sociales, atención al cliente, influencers, tiendas físicas, email'},{icon:'📈',text:'Dashboard ejecutivo: GMV, margen, nuevos clientes, retención, ticket medio — comparativas históricas'},{icon:'🧩',text:'Segmentación RFM automática: Champions, Fieles, En Riesgo, Nuevos, Durmientes'},{icon:'💬',text:'Claude como analista: preguntas en lenguaje natural → SQL → respuesta en segundos'},{icon:'📬',text:'Resumen semanal automático los lunes con análisis de Claude: qué fue bien, qué empeoró'}]},
+    impact:[{value:'<10s',label:'Respuesta a cualquier consulta de datos'},{value:'100%',label:'Decisiones respaldadas por evidencia'},{value:'0h',label:'Tiempo en preparar informes'},{value:'↑∞',label:'Activo de datos que crece con el tiempo'}],
+    tech:['PostgreSQL','Python / dbt','n8n','Claude API (function calling)','Metabase','Shopify / Meta / GA APIs'],
+    shopify:{badgeType:'custom',badgeLabel:'INTEGRACIÓN CUSTOM',surface:'ShopifyQL Python SDK + GraphQL Admin API 2026-04 + Webhooks',steps:['Instalar shopifyql Python SDK — devuelve queries como pandas DataFrames sin gestionar GraphQL manualmente','Registrar webhooks para streaming en tiempo real hacia PostgreSQL: orders/create, orders/updated, customers/create','Verificar HMAC-SHA256 en cada webhook y procesar asincrónamente','OJO: REST Admin API deprecada — toda extracción de datos debe usar GraphQL Admin API (versión 2026-04)'],time:'3-5 días'}
+  },
+  {
+    id:6, icon:'🎯', name:'Drop Control Tower',
+    tagline:'Centro de mando en tiempo real para que ningún drop pierda ventas por problemas no detectados',
+    cost:'~85€/mes', costNum:85, phase:2, roi:4, complexity:3,
+    category:'Operaciones / Datos',
+    costBreakdown:[['Hosting (Railway/Render)','~25€'],['Claude API (informes post-drop)','~40€'],['Grafana/Metabase (self-hosted)','~0-20€'],['Total','~85€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['En los minutos de un drop se concentra el máximo tráfico, ventas y problemas potenciales','Sin monitorización centralizada, detectar que la web está caída puede tardar 30+ minutos — ventas perdidas','Las decisiones de restocking se toman por intuición sin datos de demanda real por SKU']},
+    solution:{title:'La solución',items:[{icon:'📈',text:'Dashboard en tiempo real: ventas/min, stock por SKU, tráfico web, errores de pago'},{icon:'🔔',text:'Alertas inteligentes: ritmo de ventas bajo proyección, tasa de error pagos >5%, agotamiento de SKU'},{icon:'📋',text:'Informe automático post-drop generado por Claude API con comparativa histórica'},{icon:'🚨',text:'Gestión de incidencias: ticket automático + asignación + notificación por Slack/WhatsApp'},{icon:'📊',text:'Previsión de demanda por SKU usando historial de drops anteriores'}]},
+    impact:[{value:'2 min',label:'vs. 30 min para detectar un error crítico'},{value:'0',label:'Ventas perdidas por problemas no detectados'},{value:'Auto',label:'Informe completo post-drop'},{value:'↑',label:'Precisión de stock con cada drop'}],
+    tech:['Python','SQL (PostgreSQL)','Claude API','n8n','Grafana / Metabase','Slack / WhatsApp API'],
+    shopify:{badgeType:'n8n',badgeLabel:'VÍA N8N',surface:'Nodo nativo de Shopify en n8n + Webhooks + Admin GraphQL API',steps:['Usar nodo oficial de Shopify en n8n para recibir eventos en tiempo real: orders/create, inventory_levels/update, checkouts/create','Consultar stock en tiempo real con GraphQL Admin API (endpoint: inventoryLevel query)','Usar ShopifyQL Python SDK para analytics post-drop — devuelve pandas DataFrames directamente','OJO: REST API de Shopify deprecada desde 2026 — usar exclusivamente GraphQL'],time:'1-3 días'}
+  },
+  {
+    id:7, icon:'📡', name:'Influencer Engine',
+    tagline:'Búsqueda, contacto y ROI de influencers sistematizados — de 3 días a 2 horas por drop',
+    cost:'~220€/mes', costNum:220, phase:2, roi:4, complexity:3,
+    category:'Marketing / Contenido',
+    costBreakdown:[['Claude API','~60€'],['Apify (scraping influencers)','~50€'],['HypeAuditor API (básico)','~100€'],['n8n self-hosted','~10€'],['Total','~220€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Nathy Peluso hizo un pedido orgánico — el potencial está probado, pero no está sistematizado','Identificar y contactar influencers manualmente toma 2-3 días y los resultados son subjetivos','Sin tracking de ROI por influencer, el presupuesto se asigna por intuición, no por evidencia']},
+    solution:{title:'La solución',items:[{icon:'🎯',text:'Radar de influencers por drop: perfil ideal generado por IA + filtrado por engagement, geografía, estética'},{icon:'💌',text:'Outreach personalizado: DM/email que referencia una publicación reciente del influencer'},{icon:'📊',text:'Pipeline de seguimiento: contactado → respondió → confirmado → publicó → rendimiento'},{icon:'💰',text:'ROI post-campaña: correlación tráfico/ventas/seguidores con cada colaboración'}]},
+    impact:[{value:'3-5x',label:'Más respuestas con mensajes personalizados'},{value:'2h',label:'vs. 3 días para búsqueda y contacto'},{value:'100%',label:'Decisiones de influencer basadas en ROI'},{value:'∞',label:'Base de datos propietaria en crecimiento'}],
+    tech:['Claude API (Sonnet 4.6 + Vision)','n8n','Apify','Python','SQL','HypeAuditor API']
+  },
+  {
+    id:8, icon:'📧', name:'Email Segmentation Engine',
+    tagline:'Del mismo email para todos a conversaciones personalizadas — +388% click rate en marcas similares',
+    cost:'~190€/mes', costNum:190, phase:2, roi:5, complexity:2,
+    category:'Marketing / Contenido',
+    costBreakdown:[['Klaviyo (plan según lista)','~150€'],['Claude API (generación de copies)','~40€'],['Total','~190€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Enviar el mismo email a toda la base es desperdiciar el activo más valioso: un cliente con 5 prendas necesita un mensaje diferente al que compró hace 3 meses','Culture Kings implementó segmentación AI en Klaviyo: +388% click rate, -43-64% en unsubscribes','Los flows de recuperación de carrito y win-back no están configurados — revenue dejado sobre la mesa cada semana']},
+    solution:{title:'La solución',items:[{icon:'🧩',text:'Segmentación RFM automática: Champions, Fieles, En Riesgo, Nuevos Prometedores, Durmientes'},{icon:'✍️',text:'Claude API genera variantes por segmento: tono insider para Champions, "te echamos de menos" para En Riesgo'},{icon:'🔄',text:'Flows automáticos: Welcome Series, Post-Compra, Carrito Abandonado 2.0 (3 toques), Win-Back'},{icon:'🧪',text:'A/B testing automático de subject lines con 10% de muestra, ganador al 90% restante'}]},
+    impact:[{value:'+30-50%',label:'Revenue atribuido a email'},{value:'-64%',label:'Reducción de unsubscribes'},{value:'Auto',label:'Flows funcionando sin intervención'},{value:'4',label:'Idiomas con tono Scuffers propio'}],
+    tech:['Klaviyo','Claude API','Python','SQL','Shopify API'],
+    shopify:{badgeType:'plug',badgeLabel:'PLUG & PLAY',surface:'Klaviyo — app nativa en Shopify App Store',steps:['Instalar Klaviyo desde el Shopify App Store (+100.000 marcas, es la app de email más usada)','Autorizar la conexión OAuth — Klaviyo importa automáticamente todos los datos históricos de clientes y pedidos','La sincronización es bidireccional y en tiempo real: carrito abandonado detectado en segundos','Configurar flows (Welcome Series, Abandoned Cart, Win-Back) desde la interfaz visual de Klaviyo'],time:'10-15 min conexión · 2-4h flows'}
+  },
+  {
+    id:9, icon:'⭐', name:'Loyalty Club',
+    tagline:'Convertir compradores recurrentes en embajadores — con acceso exclusivo, no con descuentos genéricos',
+    cost:'~60€/mes', costNum:60, phase:2, roi:4, complexity:3,
+    category:'Producto / UX',
+    costBreakdown:[['Hosting backend','~20€'],['Claude API (personalización)','~40€'],['Total','~60€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Un aumento del 5% en retención de clientes puede generar hasta 95% más de beneficio (Harvard Business School)','Scuffers tiene clientes que llevan años comprando cada drop — pero no hay ningún sistema que los reconozca','Nude Project no tiene programa de fidelización — Scuffers puede construir esta ventaja primero']},
+    solution:{title:'La solución',items:[{icon:'🏆',text:'3 tiers: Crew (entrada), OG (recurrentes), Founder (top 5%) — nombres con identidad Scuffers'},{icon:'⚡',text:'Early access gamificado: 24h antes para OG, 48h antes para Founders con cola de prioridad'},{icon:'🎨',text:'Beneficios de exclusividad: colecciones limitadas, eventos en tienda, personalización de prendas'},{icon:'💬',text:'Canal de Founders para feedback directo a diseño — analizado con Claude API antes del lanzamiento'}]},
+    impact:[{value:'+95%',label:'Potencial de beneficio con +5% retención'},{value:'5-7x',label:'Más barato retener que adquirir'},{value:'0',label:'Programas de fidelización de competidores directos'},{value:'↑',label:'Datos de primera mano del core customer'}],
+    tech:['Python / FastAPI','SQL','Claude API','Klaviyo','Shopify API'],
+    shopify:{badgeType:'custom',badgeLabel:'INTEGRACIÓN CUSTOM',surface:'Custom Shopify App vía Shopify CLI + Customer Metafields + Checkout UI Extensions',steps:['Scaffoldear la app con shopify app create (CLI oficial) — framework Remix recomendado, soporta Python backend','Registrar webhooks orders/paid para detectar compras y actualizar el tier del cliente automáticamente','Guardar el tier (Crew / OG / Founder) en los Customer Metafields de Shopify — campo nativo para datos custom','Usar Checkout UI Extensions para mostrar tier y beneficios; gestionar early access con Shopify Discount API'],time:'5-7 días'}
+  },
+  // ── FASE 3: Diferenciación ─────────────────────────────────────────────────
+  {
+    id:10, icon:'👕', name:'Scuffers Try-On',
+    tagline:'Probador virtual para reducir devoluciones un 25-40% y subir la conversión un 15-25%',
+    cost:'~230€/mes', costNum:230, phase:3, roi:4, complexity:4,
+    category:'Producto / UX',
+    costBreakdown:[['Plugin de try-on (Shopify App)','~100-300€'],['Claude API (recomendaciones)','~30€'],['Total','~130-330€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Zara, ASOS y las principales marcas ya lo ofrecen — la tecnología ha madurado y en 2026 se integra en horas','Scuffers vende prendas oversized con fits muy específicos — la incertidumbre de cómo queda es alta','La incertidumbre de talla es una de las principales razones de abandono de carrito en moda online']},
+    solution:{title:'La solución',items:[{icon:'📸',text:'Probador básico: foto del usuario + prenda seleccionada → imagen realista de cómo queda'},{icon:'📏',text:'Guía de tallas con IA: altura + peso + preferencia de fit → talla exacta para esa prenda'},{icon:'👗',text:'Lookbook personalizado: combinaciones basadas en historial de compra y tendencias'},{icon:'📱',text:'Optimizado para móvil (80%+ del tráfico de Scuffers)'}]},
+    impact:[{value:'-25-40%',label:'Reducción de devoluciones'},{value:'+15-25%',label:'Aumento de conversión'},{value:'↑',label:'Diferenciación vs. streetwear español'},{value:'↓',label:'Tickets de atención por dudas de talla'}],
+    tech:['Shopify App (Zeekit / Fashom)','Claude API','Python','SQL'],
+    shopify:{badgeType:'plug',badgeLabel:'PLUG & PLAY',surface:'Shopify App Store — instalación sin código',steps:['Instalar una app del App Store: GenLook AI Virtual Try-On, Vue Virtual, o Uwear One-Click Try-On','Activar productos desde el panel de la app (toggle por producto o colección completa)','Añadir el botón "Probarse" al tema via App Blocks — drag & drop sin tocar código','Para integración avanzada: GenLook ofrece API pública para storefronts custom (1-2 días)'],time:'30 min plug & play',extra:'+189% conversión · −64% devoluciones reportado en 2026'}
+  },
+  {
+    id:11, icon:'📐', name:'AI Sizing',
+    tagline:'Predictor de tallas entrenado con datos reales de Scuffers — el 52% de devoluciones es por talla',
+    cost:'~25€/mes', costNum:25, phase:3, roi:4, complexity:3,
+    category:'Producto / UX',
+    costBreakdown:[['Hosting modelo (Railway/Render)','~15€'],['Claude API (explicaciones)','~10€'],['Total','~25€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['El 52% de todas las devoluciones en ropa son por talla incorrecta, a un coste de 8-15€ por unidad en Europa','Las prendas oversized de Scuffers tienen una percepción de fit muy subjetiva que las tallas genéricas no capturan','True Fit reporta hasta 50% de reducción en devoluciones en marcas DTC similares a Scuffers']},
+    solution:{title:'La solución',items:[{icon:'🧠',text:'Modelo entrenado con historial real de Scuffers: qué talla pidió cada cliente, si la devolvió, qué talla pidió después'},{icon:'🎯',text:'Predicción a nivel de SKU, no de categoría genérica: cada prenda aprende su propio patrón de fit'},{icon:'📱',text:'3 preguntas en la página de producto (altura, peso, preferencia) → talla recomendada con confianza'},{icon:'🔔',text:'Alerta automática al equipo de producto cuando un SKU supera la tasa media de devoluciones por talla'}]},
+    impact:[{value:'-30-50%',label:'Devoluciones por talla incorrecta'},{value:'+15-20%',label:'Conversión por reducción de incertidumbre'},{value:'10k€+',label:'Ahorro mensual en logística inversa'},{value:'Auto',label:'Mejora continua con cada devolución'}],
+    tech:['Python (scikit-learn / XGBoost)','SQL','Shopify API','FastAPI','Claude API'],
+    shopify:{badgeType:'plug',badgeLabel:'PLUG & PLAY (o custom)',surface:'Shopify App Store o Shopify Admin API + App Embed',steps:['OPCIÓN RÁPIDA: Instalar SmartSize AI Fit Recommender, AI Fit Finder, o Prime AI Clothing Size Finder del App Store','OPCIÓN CUSTOM: Usar Shopify AI Toolkit (plugin oficial) para scaffoldear la app con el modelo propio de Scuffers','Exponer el modelo Python vía FastAPI; conectar con Shopify Admin API para leer historial de devoluciones por SKU','Embeber el widget de recomendación en la página de producto via App Block'],time:'15 min plug & play · 3-4 días modelo custom'}
+  },
+  {
+    id:12, icon:'💬', name:'WhatsApp Commerce',
+    tagline:'El canal con 98% de tasa de apertura que ningún competidor de streetwear europeo usa estratégicamente',
+    cost:'~90€/mes', costNum:90, phase:3, roi:4, complexity:3,
+    category:'Atención al Cliente',
+    costBreakdown:[['WhatsApp Business API (conversaciones)','~50€'],['Claude API','~30€'],['n8n + hosting','~10€'],['Total','~90€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['WhatsApp tiene 98% de tasa de apertura vs. 20-25% del email — la diferencia de alcance es abismal','En España, Alemania, Italia y Francia, WhatsApp es el canal de comunicación principal para 18-30 años','Prácticamente ninguna marca de streetwear europeo lo usa de forma estratégica — ventana de oportunidad abierta']},
+    solution:{title:'La solución',items:[{icon:'🔔',text:'Notificaciones de drop por WhatsApp con imágenes, precio y enlace directo — recordatorio 1h antes'},{icon:'🤖',text:'Scuffi extendido a WhatsApp: mismas capacidades de gestión de pedidos, devoluciones y consultas'},{icon:'💬',text:'Secuencias de nutrición conversacional para suscriptores que no han comprado en el último mes'},{icon:'🏪',text:'QR en tiendas físicas para conectar con Scuffers por WhatsApp y acceder al Loyalty Club'}]},
+    impact:[{value:'98%',label:'Tasa de apertura vs. 25% del email'},{value:'10-15x',label:'Más clics que email en notificaciones'},{value:'0',label:'Competidores directos con WhatsApp estratégico'},{value:'↑',label:'Cobertura omnicanal tienda física + digital'}],
+    tech:['WhatsApp Business API (Meta)','n8n','Claude API','Python','SQL'],
+    shopify:{badgeType:'n8n',badgeLabel:'VÍA N8N',surface:'Nodo nativo Shopify en n8n + WhatsApp Business Cloud node',steps:['En n8n: usar el trigger nativo de Shopify para capturar eventos orders/create y orders/fulfilled (sin código)','Conectar con el nodo de WhatsApp Business Cloud (nativo en n8n) para enviar notificaciones al cliente','Existe plantilla oficial en n8n lista para usar: "AI-powered WhatsApp customer support for Shopify brands"','OJO: Meta requiere plantillas de mensaje pre-aprobadas para mensajes salientes (business-initiated)'],time:'2-4 horas con plantillas n8n'}
+  },
+  {
+    id:13, icon:'👁️', name:'Competitor Intelligence',
+    tagline:'El equipo tarda 0 horas en investigar a la competencia — el sistema lo hace de forma continua',
+    cost:'~110€/mes', costNum:110, phase:3, roi:3, complexity:2,
+    category:'Operaciones / Datos',
+    costBreakdown:[['Apify (scraping competidores)','~60€'],['Claude API (análisis + informe semanal)','~40€'],['n8n + hosting','~10€'],['Total','~110€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Nude Project facturó 26M€ en 2023 con 130% de crecimiento interanual y está abriendo en Los Ángeles','Un drop con estética similar al de un competidor lanzado 2 semanas antes puede arruinar el momentum','Sin tracking de precios en tiempo real, Scuffers podría estar mal posicionado sin saberlo']},
+    solution:{title:'La solución',items:[{icon:'🚨',text:'Alerta inmediata cuando Nude Project, Pompeii, Stüssy u otros lanzan nuevo producto con precio e imágenes'},{icon:'💰',text:'Tabla de precios en tiempo real por categoría + alertas de subidas, bajadas o promociones inesperadas'},{icon:'📱',text:'Radar de redes sociales: seguidores, engagement y qué influencers colaboran con competidores'},{icon:'📄',text:'Informe semanal de inteligencia competitiva cada lunes + "oportunidades detectadas"'}]},
+    impact:[{value:'0h',label:'Investigación manual de competencia'},{value:'Lunes',label:'Informe semanal automático'},{value:'Real-time',label:'Tracking de precios y lanzamientos'},{value:'↑',label:'Calibración de precios y posicionamiento'}],
+    tech:['n8n','Apify','Claude API','Python','SQL','Metabase']
+  },
+  {
+    id:14, icon:'🎨', name:'AI Visual Content Studio',
+    tagline:'De semanas a horas para producir contenido visual de campaña — sin sesión de fotos para cada variante',
+    cost:'~50€/mes', costNum:50, phase:3, roi:3, complexity:2,
+    category:'Marketing / Contenido',
+    costBreakdown:[['API de generación de imagen (Midjourney/Flux)','~30€'],['Claude API (dirección creativa)','~20€'],['Total','~50€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['H&M creó en 2025 "gemelos digitales" de 30 modelos reales para campañas, reduciendo drásticamente el coste','Una sesión fotográfica completa para variaciones de producto puede tardar semanas y costar miles de euros','Instagram y TikTok demandan contenido constante — el equipo creativo no puede producir al ritmo necesario']},
+    solution:{title:'La solución',items:[{icon:'📸',text:'Mockups y variaciones de producto en diferentes contextos sin sesión fotográfica completa'},{icon:'🎭',text:'Imágenes de campaña desde concept (referencias, paleta, mood) — especialmente útil para stories y newsletters'},{icon:'🧪',text:'A/B testing visual: 3-5 variantes de un anuncio antes de invertir en producción profesional'},{icon:'✨',text:'Texturas, estampados y grafismos como punto de partida para el equipo de diseño de nuevas colecciones'}]},
+    impact:[{value:'Horas',label:'vs. semanas para contenido de campaña'},{value:'↑',label:'Volumen de contenido sin más equipo'},{value:'↓',label:'Coste por variante visual'},{value:'3-5x',label:'Variantes para A/B testing visual'}],
+    tech:['Midjourney API / Flux / Stable Diffusion','Claude API','Python']
+  },
+  {
+    id:15, icon:'📍', name:'Location Intelligence',
+    tagline:'Convertir la próxima tienda de una decisión intuitiva en un análisis de datos riguroso',
+    cost:'~65€/mes', costNum:65, phase:3, roi:3, complexity:2,
+    category:'Operaciones / Datos',
+    costBreakdown:[['Google Maps API','~30€'],['Claude API (informes bajo demanda)','~20€'],['Hosting','~15€'],['Total','~65€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['La siguiente tienda física es una decisión de cientos de miles de euros — elegir la ubicación incorrecta es muy costoso','Los pop-ups en Londres, Ámsterdam y Los Ángeles son oportunidades de test si se mide bien','Hay ciudades con alta demanda online de Scuffers que no están siendo consideradas para expansión']},
+    solution:{title:'La solución',items:[{icon:'🗺️',text:'Score de localización: demanda online, densidad de público objetivo, tráfico peatonal, alquiler, competidores'},{icon:'🔬',text:'Pop-ups como experimentos controlados: ventas/hora, perfil de comprador, NPS, ratio primera compra'},{icon:'🌍',text:'Informe de expansión internacional con datos de Scuffers + tendencias locales + eventos'},{icon:'🔍',text:'Análisis cruzado de pedidos por código postal con zonas sin tienda física'}]},
+    impact:[{value:'↓',label:'Riesgo en elección de ubicación'},{value:'Data',label:'Cada pop-up es un experimento'},{value:'Ocultas',label:'Oportunidades no obvias detectadas'},{value:'100k€+',label:'Ahorro potencial por decisión acertada'}],
+    tech:['Python (GeoPandas)','SQL','Claude API','Google Maps API','Metabase']
+  },
+  {
+    id:16, icon:'🛡️', name:'Anti-Hacoo',
+    tagline:'Proteger la percepción de valor de marca contra el mercado de réplicas de ropa low-cost',
+    cost:'~90€/mes', costNum:90, phase:3, roi:3, complexity:3,
+    category:'Marca / Legal',
+    costBreakdown:[['n8n self-hosted (VPS)','~10€'],['Apify scraping (plan Growth)','~50€'],['Claude API (análisis + redacción)','~30€'],['Total','~90€/mes']],
+    problem:{title:'¿Por qué ahora?',bullets:['Hacoo entró en el top 10 de apps más descargadas en España en 2024-2025 vendiendo réplicas a precios ridículos','Público objetivo idéntico al de Scuffers: adolescentes y jóvenes 16-28 años','No es solo competencia de precio — es un ataque directo a la percepción de valor de marca']},
+    solution:{title:'La solución',items:[{icon:'🔍',text:'Monitorización automática de Hacoo, Shein, AliExpress, Vinted y Wallapop con similitud visual'},{icon:'⚠️',text:'Alertas automáticas al equipo legal + borrador de notificación de infracción de diseño comunitario'},{icon:'📢',text:'Campaña "Real vs. Fake" generada con Claude API para educar a la comunidad'},{icon:'🔐',text:'QR + hash único por prenda para verificar autenticidad y rastrear en el mercado de segunda mano'}]},
+    impact:[{value:'0€',label:'Sustitución por réplicas'},{value:'1 activo',label:'Autenticidad como ventaja vs. Hacoo'},{value:'Auto',label:'Notificaciones legales'},{value:'24/7',label:'Monitorización continua'}],
+    tech:['n8n','Python','Apify','Claude API (Sonnet)','SQL','Vision AI']
+  }
+];
+
+const PHASES = [
+  {num:1,name:'Fase 1 — Quick Wins',period:'Mes 1–3',total:'~395€/mes',desc:'Herramientas de mayor impacto inmediato y menor complejidad técnica',ideas:[1,2,3,4]},
+  {num:2,name:'Fase 2 — Core Infrastructure',period:'Mes 4–8',total:'~725€/mes',desc:'La infraestructura de datos que hace todo más inteligente',ideas:[5,6,7,8,9]},
+  {num:3,name:'Fase 3 — Diferenciación',period:'Mes 9–18',total:'~660€/mes',desc:'Ventaja competitiva duradera y difícil de copiar',ideas:[10,11,12,13,14,15,16]}
+];
+
+let currentSlide = 0;
+const totalSlides = 18;
+let sidebarVisible = true;
+
+function getIdeaById(id){ return IDEAS.find(i => i.id === id); }
+
+function toggleSidebar(){
+  sidebarVisible = !sidebarVisible;
+  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarVisible);
+  document.getElementById('main').classList.toggle('full', !sidebarVisible);
+}
+
+function goTo(index){
+  if(index < 0 || index >= totalSlides) return;
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('slide-' + index).classList.add('active');
+  currentSlide = index;
+  updateNav();
+  updateSidebar();
+}
+
+function nextSlide(){ goTo(currentSlide + 1); }
+function prevSlide(){ goTo(currentSlide - 1); }
+
+function updateNav(){
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').disabled = currentSlide === totalSlides - 1;
+  const pct = ((currentSlide) / (totalSlides - 1) * 100).toFixed(0);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('slide-counter').textContent = String(currentSlide + 1).padStart(2,'0') + ' / ' + String(totalSlides).padStart(2,'0');
+  const info = currentSlide === 0 ? 'Overview · 16 ideas · Roadmap' :
+               currentSlide === 17 ? 'Roadmap 2026 · 3 fases' :
+               IDEAS[currentSlide - 1] ? IDEAS[currentSlide-1].name : '';
+  document.getElementById('footer-info').textContent = info;
+}
+
+function updateSidebar(){
+  document.querySelectorAll('.sidebar-item, .sidebar-special').forEach(el => el.classList.remove('active'));
+  if(currentSlide === 0) document.getElementById('nav-0').classList.add('active');
+  else if(currentSlide === 17) document.getElementById('nav-17').classList.add('active');
+  else document.getElementById('nav-idea-' + currentSlide).classList.add('active');
+}
+
+function buildSidebarIdeas(){
+  const container = document.getElementById('sidebar-ideas');
+  const phaseLabels = ['','Fase 1 · Quick Wins','Fase 2 · Core Infra','Fase 3 · Diferenciación'];
+  const phaseColors = ['','var(--p1)','var(--p2)','var(--p3)'];
+  let lastPhase = 0;
+  IDEAS.forEach(idea => {
+    if(idea.phase !== lastPhase){
+      lastPhase = idea.phase;
+      const lbl = document.createElement('div');
+      lbl.className = 'sidebar-phase-label';
+      lbl.style.color = phaseColors[idea.phase];
+      lbl.textContent = phaseLabels[idea.phase];
+      container.appendChild(lbl);
+    }
+    const div = document.createElement('div');
+    div.className = 'sidebar-item';
+    div.id = 'nav-idea-' + idea.id;
+    div.onclick = () => goTo(idea.id);
+    div.innerHTML = `<span class="snum">${String(idea.id).padStart(2,'0')}</span><span class="sname">${idea.name}</span><span class="scost">${idea.cost}</span>`;
+    container.appendChild(div);
+  });
+}
+
+function buildOverviewGrid(){
+  const grid = document.getElementById('overview-grid');
+  const phaseChipCls = ['','cp1','cp2','cp3'];
+  const phaseShort = ['','F1','F2','F3'];
+  IDEAS.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'idea-chip';
+    div.onclick = () => goTo(idea.id);
+    div.innerHTML = `<span class="chip-icon">${idea.icon}</span><div class="chip-info"><div class="chip-num">${String(idea.id).padStart(2,'0')}</div><div class="chip-name">${idea.name}</div><div class="chip-cost">${idea.cost}</div><span class="chip-phase ${phaseChipCls[idea.phase]}">${phaseShort[idea.phase]}</span></div>`;
+    grid.appendChild(div);
+  });
+}
+
+function buildIdeaSlides(){
+  const container = document.getElementById('idea-slides');
+  IDEAS.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'slide';
+    div.id = 'slide-' + idea.id;
+    const phaseCls = 'p' + idea.phase;
+    const phaseLabel = idea.phase === 1 ? 'Fase 1 · Quick Win' : idea.phase === 2 ? 'Fase 2 · Core Infra' : 'Fase 3 · Diferenciación';
+    const roiPct = (idea.roi / 5 * 100) + '%';
+    const complexityPct = (idea.complexity / 5 * 100) + '%';
+    const roiLabel = ['','Bajo','Medio-bajo','Medio','Alto','Muy alto'][idea.roi];
+    const complexityLabel = ['','Muy baja','Baja','Media','Alta','Muy alta'][idea.complexity];
+    const bulletHTML = idea.problem.bullets.map(b => `<li>${b}</li>`).join('');
+    const featureHTML = idea.solution.items.map(f => `<div class="feature-item"><span class="fi-icon">${f.icon}</span><span>${f.text}</span></div>`).join('');
+    const kpiHTML = idea.impact.map(k => `<div class="kpi-item"><div class="kv">${k.value}</div><div class="kl">${k.label}</div></div>`).join('');
+    const techChips = idea.tech.map(t => `<span class="tech-chip">${t}</span>`).join('');
+    const costRows = idea.costBreakdown.map((r,i) => {
+      const cls = i === idea.costBreakdown.length - 1 ? ' class="total"' : '';
+      return `<tr${cls}><td>${r[0]}</td><td>${r[1]}</td></tr>`;
+    }).join('');
+    let shopifyHTML = '';
+    if(idea.shopify){
+      const s = idea.shopify;
+      const bcls = s.badgeType;
+      const emoji = bcls==='plug'?'🟢':bcls==='custom'?'🟡':'🔵';
+      const stepsHTML = s.steps.map((step,i)=>`<div class="shopify-step"><span class="shopify-step-num sn-${bcls}">${i+1}.</span><span>${step}</span></div>`).join('');
+      const extraHTML = s.extra?`<div class="shopify-extra">${s.extra}</div>`:'';
+      shopifyHTML = `<div class="shopify-block"><div class="shopify-head"><span class="shopify-badge ${bcls}">${emoji} ${s.badgeLabel}</span><span class="shopify-head-title">Integración Shopify</span></div><div class="shopify-surface">${s.surface}</div><div class="shopify-body"><div class="shopify-steps">${stepsHTML}</div><div class="shopify-meta"><div class="shopify-time"><div class="shopify-time-val">${s.time}</div><div class="shopify-time-lbl">Tiempo estimado</div></div>${extraHTML}</div></div></div>`;
+    }
+    div.innerHTML = `
+      <div class="idea-hero">
+        <div class="idea-hero-left">
+          <div class="idea-hero-num">${String(idea.id).padStart(2,'0')}</div>
+          <div class="idea-hero-name">${idea.name}</div>
+          <div class="idea-hero-tagline">${idea.tagline}</div>
+        </div>
+        <div class="idea-hero-right">
+          <div class="idea-icon">${idea.icon}</div>
+          <div class="cost-badge">${idea.cost}</div>
+          <div class="phase-badge ${phaseCls}">${phaseLabel}</div>
+        </div>
+      </div>
+      <div class="cards-row">
+        <div class="info-card">
+          <div class="info-card-title"><span class="dot dot-red"></span>${idea.problem.title}</div>
+          <ul class="bullet-list">${bulletHTML}</ul>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title"><span class="dot dot-blue"></span>${idea.solution.title}</div>
+          <div class="feature-list">${featureHTML}</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title"><span class="dot dot-green"></span>Impacto esperado</div>
+          <div class="kpis-grid">${kpiHTML}</div>
+        </div>
+      </div>
+      <div class="bottom-row">
+        <div class="tech-card">
+          <div class="info-card-title" style="margin-bottom:10px"><span class="dot" style="background:#A855F7"></span>Stack tecnológico</div>
+          <div class="tech-chips">${techChips}</div>
+          <table class="cost-table">${costRows}</table>
+        </div>
+        <div class="bars-card">
+          <div class="info-card-title" style="margin-bottom:14px"><span class="dot" style="background:#F59E0B"></span>Valoración</div>
+          <div class="bar-row">
+            <div class="bar-label"><span>ROI Esperado</span><span>${roiLabel}</span></div>
+            <div class="bar-track"><div class="bar-fill bar-roi" style="width:${roiPct}"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Complejidad</span><span>${complexityLabel}</span></div>
+            <div class="bar-track"><div class="bar-fill bar-complexity" style="width:${complexityPct}"></div></div>
+          </div>
+        </div>
+      </div>
+      ${shopifyHTML}`;
+    container.appendChild(div);
+  });
+}
+
+function buildRoadmap(){
+  const grid = document.getElementById('phases-grid');
+  PHASES.forEach(phase => {
+    const div = document.createElement('div');
+    div.className = 'phase-col';
+    const pCls = 'phase' + phase.num + '-theme';
+    const totalCls = 'phase-total-p' + phase.num;
+    const borderCls = 'border-p' + phase.num;
+    let cardsHTML = phase.ideas.map(id => {
+      const idea = getIdeaById(id);
+      return `<div class="roadmap-card ${borderCls}" onclick="goTo(${id})">
+        <div class="roadmap-card-header"><span class="roadmap-card-icon">${idea.icon}</span><span class="roadmap-card-name">${String(id).padStart(2,'0')} · ${idea.name}</span></div>
+        <div class="roadmap-card-cost">${idea.cost}</div>
+      </div>`;
+    }).join('');
+    div.innerHTML = `
+      <div class="phase-header">
+        <div><div class="phase-name ${pCls}">${phase.name}</div><span class="phase-period" style="color:var(--text3)">${phase.period}</span></div>
+        <div class="phase-total ${totalCls}">${phase.total}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px">${phase.desc}</div>
+      ${cardsHTML}`;
+    grid.appendChild(div);
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+});
+
+buildSidebarIdeas();
+buildOverviewGrid();
+buildIdeaSlides();
+buildRoadmap();
+updateNav();
+</script>
+</body>
+</html>
